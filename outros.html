@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guia Rápido dos Principais Comandos Git</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Comandos e Dicas Úteis</h1>
+    </header>
+
+    <main>
+      <section id="comandos">
+        <h2>Dicas Úteis</h2>
+
+        <div class="comando-item">
+          <h3>1. ssh-keygen</h3>
+          <p class="descricao">
+            Geração de chave pública e privada
+          </p>
+          <div class="exemplo">
+            <p><strong>Exemplo:</strong></p>
+            <pre><code>ssh-keygen -t ed25519 -C "seu-email@example.com"</code></pre>
+          </div>
+        </div>
+
+        <div class="comando-item">
+          <h3>2. ssh-keygen - versão RSA</h3>
+          <p class="descricao">
+            Geração de chave pública e privada, criptografia mais antiga
+          </p>
+          <div class="exemplo">
+            <p><strong>Exemplo:</strong></p>
+            <pre><code>ssh-keygen -t rsa -b 4096 -C "seu-email@example.com"</code></pre>
+          </div>
+        </div>
+
+        <div class="comando-item">
+          <h3>3. Testar Conexão SSH</h3>
+          <p class="descricao">
+            Verifica se está tudo certo
+          </p>
+          <div class="exemplo">
+            <p>
+              <strong>Comando:</strong>
+            </p>
+            <pre><code>ssh -T git@github.com</code></pre>
+          </div>
+        </div>
+
+        <div class="comando-item">
+          <h3>4. Conexão HTTPS com token</h3>
+          <p class="descricao">
+            Você pode usar a autenticação
+          </p>
+          <div class="exemplo">
+            <p><strong>Comando:</strong></p>
+            <pre><code>git clone https://[USUARIO]:[TOKEN]@github.com/[USUARIO]/[REPOSITORIO].git</code></pre>
+          </div>
+        </div>
+
+        <div class="comando-item">
+          <h3>5. Site para estudar GIT</h3>
+          <p class="descricao">
+            <a href="https://git-school.github.io/visualizing-git/">site útil</a>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Guia Git Simples. Criado para fins educativos.</p>
+    </footer>
+  </body>
+</html>

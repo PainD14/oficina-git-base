@@ -1,0 +1,98 @@
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f7f6;
+  color: #333;
+  line-height: 1.6;
+}
+
+header {
+  background-color: #3e277c;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+  margin-top: 0;
+  font-size: 2.5em;
+}
+
+header p {
+  font-size: 1.1em;
+  opacity: 0.9;
+}
+
+main {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+h2 {
+  color: #3e277c;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 10px;
+  margin-bottom: 25px;
+}
+
+.comando-item {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.comando-item h3 {
+  color: #5c39a7;
+  margin-top: 0;
+  border-left: 5px solid #5c39a7;
+  padding-left: 10px;
+}
+
+.descricao {
+  font-style: italic;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.exemplo {
+  background-color: #e8eaf6;
+  padding: 15px;
+  border-radius: 5px;
+  border: 1px solid #c5c7d0;
+  margin-top: 10px;
+}
+
+.exemplo p strong {
+  color: #3e277c;
+  display: block;
+  margin-bottom: 5px;
+}
+
+pre {
+  background-color: #444;
+  color: #f0f0f0;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 0;
+}
+
+code {
+  font-family: "Consolas", "Monaco", monospace;
+}
+
+footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #ccc;
+  color: #333;
+  font-size: 0.9em;
+  margin-top: 40px;
+  border-top: 1px solid #aaa;
+}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guia Rápido dos Principais Comandos Git</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Guia Rápido dos Principais Comandos Git</h1>
+      <p>
+        Esses são os comandos essenciais para começar a usar o Git e o controle
+        de versão.
+      </p>
+      <p>Outros comandos úteis <a href="outros.html">comandos</a></p>
+    </header>
+
+    <main>
+      <section id="comandos">
+        <h2>Comandos Essenciais</h2>
+
+        <div class="comando-item">
+          <h3>1. git init</h3>
+          <p class="descricao">
+            Inicializa um novo repositório Git no diretório atual.
+          </p>
+          <div class="exemplo">
+            <p><strong>Exemplo:</strong></p>
+            <pre><code>git init</code></pre>
+          </div>
+        </div>
+
+        <div class="comando-item">
+          <h3>2. git clone</h3>
+          <p class="descricao">
+            Clona um repositório existente de uma URL (como GitHub ou GitLab).
+          </p>
+          <div class="exemplo">
+            <p><strong>Exemplo:</strong></p>
+            <pre><code>git clone [URL_do_repositorio]</code></pre>
+          </div>
+        </div>
+
+        <div class="comando-item">
+          <h3>3. git add</h3>
+          <p class="descricao">
+            Adiciona mudanças no diretório de trabalho para a "staging area"
+            (área de preparação) para o próximo commit.
+          </p>
+          <div class="exemplo">
+            <p>
+              <strong>Exemplo (para todos os arquivos modificados):</strong>
+            </p>
+            <pre><code>git add .</code></pre>
+          </div>
+        </div>
+
+        <div class="comando-item">
+          <h3>4. git commit</h3>
+          <p class="descricao">
+            Grava as mudanças da "staging area" no histórico do repositório com
+            uma mensagem descritiva.
+          </p>
+          <div class="exemplo">
+            <p><strong>Exemplo:</strong></p>
+            <pre><code>git commit -m "Mensagem do commit"</code></pre>
+          </div>
+        </div>
+
+        <div class="comando-item">
+          <h3>5. git status</h3>
+          <p class="descricao">
+            Mostra o estado do diretório de trabalho e da "staging area".
+          </p>
+          <div class="exemplo">
+            <p><strong>Exemplo:</strong></p>
+            <pre><code>git status</code></pre>
+          </div>
+        </div>
+
+        <div class="comando-item">
+          <h3>6. git push</h3>
+          <p class="descricao">
+            Envia os commits locais para o repositório remoto (ex: GitHub).
+          </p>
+          <div class="exemplo">
+            <p><strong>Exemplo:</strong></p>
+            <pre><code>git push origin [nome_da_branch]</code></pre>
+          </div>
+        </div>
+
+        <div class="comando-item">
+          <h3>7. git pull</h3>
+          <p class="descricao">
+            Busca e mescla as mudanças do repositório remoto para o branch
+            local.
+          </p>
+          <div class="exemplo">
+            <p><strong>Exemplo:</strong></p>
+            <pre><code>git pull origin [nome_da_branch]</code></pre>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Guia Git Simples. Criado para fins educativos.</p>
+    </footer>
+  </body>
+</html>
