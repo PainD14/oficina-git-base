@@ -213,7 +213,7 @@ def scenes_with_extras(scenes, idx, allow_large):
     # Acrescenta tomadas de acervo REAL ainda não usadas. A seleção por data é
     # PROVISÓRIA e pode conter bastidores. Áudio dessas extras fica em silêncio.
     assigned = {canon(clip["arquivo"]) for scene in scenes for clip in scene.get("clipes", [])}
-    buckets = {2:["C08"],3:["C07"],4:["C13","C14"],5:["C13","C14"],
+    buckets = {2:["C08"],3:["C10"],4:["C13","C14"],5:["C13","C14"],
                6:["C16","C17","C18"],7:["C18","C19"],
                8:["C20","C21","C22","C23"],9:["C24","C25"],
                10:["C24","C25"],11:["C25","C28"],12:["C30","C31"]}
