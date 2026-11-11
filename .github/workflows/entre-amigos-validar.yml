@@ -1,0 +1,29 @@
+name: Conferir ENTRE AMIGOS Windows renderizador
+on:
+  push:
+    branches: [entre-amigos-v1-recuperacao]
+  workflow_dispatch:
+jobs:
+  validar-projeto:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verificar sintaxe Python sem renderizacao
+        run: python -m py_compile entre-amigos/montar_v1.py
+      - name: Checar manifesto das 33 cenas
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open("entre-amigos/projeto_v1.json",encoding="utf-8"))
+          cenas=p["cenas"]
+          assert len(cenas)==33
+          assert [c["id"] for c in cenas]==[f"C{i:02d}" for i in range(1,34)]
+          assert sum(len(c["clipes"]) for c in cenas)==86
+          assert p["abertura_aprovada"]=="ENTRE_AMIGOS_ABERTURA_APROVADA.mp4"
+          print("Manifesto e cena C01-C33 OK")
+          PY
+      - name: Testar ajuda do comando
+        run: python entre-amigos/montar_v1.py --help
