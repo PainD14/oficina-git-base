@@ -1,73 +1,50 @@
-# ENTRE AMIGOS | Projeto de recuperação para Windows
+# ENTRE AMIGOS (2024) | V1 para Windows
 
-**Estado:** manifesto e renderizador salvos em branch separada. O arquivo MP4 final ainda **não foi gerado nem testado** aqui. A execução local anterior ficou indisponível. **Esta branch foi criada agora para recuperação**, não é prova de um projeto antigo localizado no GitHub.
+**Estado em 11/11/2026:** renderizador e testes sintéticos no GitHub; o filme completo ainda **não** foi renderizado com as mídias originais. A branch main permanece intacta.
 
-Repositório: https://github.com/PainD14/oficina-git-base
-Branch: `entre-amigos-v1-recuperacao`
-Pasta: `entre-amigos/`
-Não foram enviados vídeos privados ao GitHub nem alterada a branch `main`.
+## Material anterior preservado
 
-## O que foi preservado
+- [Bloco 01, 2min43,7s, com abertura aprovada incluída](https://share.descript.com/view/7aTMx3UqC9x)
+- [Bloco 02, 1min11,3s, C09 a C12](https://share.descript.com/view/WNgRx7FydqK)
+- [Abertura isolada como referência, não reinserir](https://drive.google.com/file/d/1ljz6cSW9yFi836xtZ8p_XWULkv3O6kZU/view)
+- [Edição original no Descript](https://web.descript.com/bb1c9a8d-d468-48e4-9e8b-18494dbf9871)
 
-- **Bloco 01**: https://share.descript.com/view/7aTMx3UqC9x , 2min43,7s, com a abertura original de 14,27s **já incluída**.
-- **Bloco 02**: https://share.descript.com/view/WNgRx7FydqK , 1min11,3s, cenas C09 a C12.
-- **Abertura isolada**: https://drive.google.com/file/d/1ljz6cSW9yFi836xtZ8p_XWULkv3O6kZU/view
-- **Projeto editável no Descript**: https://web.descript.com/bb1c9a8d-d468-48e4-9e8b-18494dbf9871
+## Windows, sem programação
 
-O renderizador usa **Bloco 01 + Bloco 02 uma única vez**, evitando duplicação da abertura e das primeiras 12 cenas. Como o Bloco 02 já traz C09–C12, uma **montagem complementar de C10 com Velha Infância** entra depois dele, utilizando outras mídias sem repetir cenas do bloco.
+1. [Baixar ZIP desta branch](https://github.com/PainD14/oficina-git-base/archive/refs/heads/entre-amigos-v1-recuperacao.zip). Extrair e abrir a pasta **entre-amigos**.
+2. Instalar [Python 3.12+](https://www.python.org/downloads/windows/) e FFmpeg. No PowerShell: **winget install --id Gyan.FFmpeg --exact**. Reabrir o terminal se necessário.
+3. Baixar os dois MP4 do Descript. Colocar na subpasta **blocos**, com os nomes exatos **BLOCO_01.mp4** e **BLOCO_02.mp4**.
+4. Disponibilizar offline a pasta principal do documentário através do Google Drive para computador. Preservar subpastas, vídeos, fotos e músicas originais, sem renomear.
+5. Dar dois cliques no **MONTAR_V1_WINDOWS.bat**. Colar o caminho da pasta das mídias quando solicitado. Ele verifica Python, FFmpeg, bibliotecas e todos os arquivos de fonte antes de iniciar.
+6. Acompanhar o progresso por cena no terminal. Saída prevista: **entre-amigos/saida/ENTRE_AMIGOS_V1_REVISAO.mp4**. Duração medida e pendências ficam em **saida/RESULTADO.json** e **saida/PROGRESSO.json**.
 
-**Conferência de fontes em 11/11/2026:** os 88 nomes distintos dos vídeos/fotos selecionados e as nove trilhas posteriores à abertura foram encontrados no Google Drive. A existência na nuvem não substitui a disponibilidade local no Windows.
+Se interromper, execute novamente o mesmo BAT. Segmentos válidos são reaproveitados somente quando os timecodes, músicas e fontes não foram alterados. A pasta **saida** preserva o progresso e os intermediários.
 
-## Como executar no Windows
+## Estrutura
 
-1. [Baixe o ZIP desta branch](https://github.com/PainD14/oficina-git-base/archive/refs/heads/entre-amigos-v1-recuperacao.zip), descompacte-o e abra a subpasta **entre-amigos**.
-2. Instale **Python 3.12+** e **FFmpeg**. No PowerShell, você pode usar `winget install --id Gyan.FFmpeg --exact`. Confirme `ffmpeg -version`, `ffprobe -version` e `py -3 --version` numa nova janela.
-3. No Descript, use o botão de download das duas versões publicadas. Salve-as exatamente como `entre-amigos\blocos\BLOCO_01.mp4` e `entre-amigos\blocos\BLOCO_02.mp4`. **Não baixe a abertura isolada para substituir o Bloco 01**, pois ela já faz parte desse bloco.
-4. Instale **Google Drive para computador** e disponibilize a pasta principal do documentário inteiramente no disco. Ela deve conter os vídeos originais em suas subpastas, as fotografias e a pasta de músicas. Não é necessário renomear nada.
-5. Dê duplo clique em **MONTAR_V1_WINDOWS.bat**. Cole o caminho local da pasta do documentário quando solicitado.
-6. O BAT primeiro verifica as dependências e fontes, depois produz os blocos das cenas e junta os arquivos. O resultado previsto é `saida\ENTRE_AMIGOS_V1_REVISAO.mp4`. Consulte `saida\PROGRESSO.json` e `saida\RESULTADO.json` para saber o que realmente foi feito.
+- **projeto_v1.json**: as 33 cenas e os 89 cortes candidatos; músicas e caminhos lógicos. C01 inclui todo o Bloco 01, C09 todo o Bloco 02. C10 é um complemento musical após o Bloco 02, não um trecho duplicado.
+- **montar_v1.py**: codifica para 1920×1080, 24 fps, H.264/AAC estéreo; mantém áudios originais em entrevistas; aplica músicas a cenas visuais; junta blocos com checagens e cache por assinatura.
+- **requirements.txt**: Pillow e pillow-heif para JPG/HEIC.
+- **teste_tecnico.py**: testes sintéticos com FFmpeg, mixagem, foto vertical, vídeo sem áudio, concatenação e invalidação de cache.
+- **.github/workflows/entre-amigos-validar.yml**: testes Linux com FFmpeg.
+- **.github/workflows/entre-amigos-windows.yml**: testa o BAT em Windows com dados sintéticos.
 
-**Para continuar após falha:** execute o mesmo BAT novamente. Clipes e cenas já finalizados são reutilizados. Não apague `saida\segmentos` nem `saida\cenas` se desejar continuar.
+A estimativa superior da seleção atual, somando limites dos cortes e durações dos blocos, é de **aproximadamente 18,9 minutos**, não 40. Essa estimativa não é a duração final medida. Para expandir, é preciso escolher mais intervalos IN/OUT pelo conteúdo verdadeiro do vídeo, não somente pela data do arquivo. O programa não estica fotos, não repete material e não inventa falas.
 
-### Teste de disponibilidade, sem renderizar
+### Extras revisadas, não extras automáticas
 
-```powershell
-py -3 -m pip install -r requirements.txt
-py -3 montar_v1.py --midias "G:\Meu Drive\ENTRE AMIGOS" --blocos ".\blocos" --verificar
-```
+A seleção de tomadas extras apenas pela data foi desativada. O BAT padrão não usa extras. A opção --extras só aceita um arquivo opcional chamado **selecoes_adicionais_aprovadas.json**, com objeto cenas, cada corte com arquivo, entrada, saida, audio, status definido como conteudo_conferido e revisado como true. Essa entrada exige verificação visual e do áudio original. Sem esse arquivo, a opção retorna erro, sem acrescentar filmagens não examinadas.
 
-### Renderização sem extras (somente seleção documentada)
+### Diagnóstico sem editar
 
-```powershell
-py -3 montar_v1.py --midias "G:\Meu Drive\ENTRE AMIGOS" --blocos ".\blocos"
-```
+No PowerShell, dentro da pasta entre-amigos:
 
-### Renderização com materiais extras não repetidos
+    py -3 montar_v1.py --midias "G:\Meu Drive\ENTRE AMIGOS" --blocos ".\blocos" --verificar
 
-```powershell
-py -3 montar_v1.py --midias "G:\Meu Drive\ENTRE AMIGOS" --blocos ".\blocos" --extras
-```
+### Executar diretamente
 
-O BAT usa `--extras`: acrescenta planos reais não repetidos de acordo com a **data do nome do arquivo**, mantendo **áudio silenciado** nos clipes extras. Não identifica personagens, não cria falas nem legendas, e não alonga cenas artificialmente. Essa seleção é **provisória** e exige avaliação depois de renderizada. Para incluir também clipes gigantes acima de 256 MiB nas tomadas extras, inclua `--incluir-grandes` conscientemente.
+    py -3 montar_v1.py --midias "G:\Meu Drive\ENTRE AMIGOS" --blocos ".\blocos"
 
-## Estrutura e dependências
+Uma renderização incompleta não é apresentada como V1 final. Para exportar uma prévia parcial intencionalmente, o parâmetro --permitir-incompleto gera **ENTRE_AMIGOS_V1_PARCIAL.mp4**, explicitamente identificado.
 
-- `projeto_v1.json`: 33 cenas (C01–C33), fontes/caminhos lógicos, músicas e janelas de cortes documentadas.
-- `montar_v1.py`: renderizador Python 3, que chama `ffprobe` e `ffmpeg`, padroniza clipes e concatena por cena com retomada automática.
-- `requirements.txt`: Pillow e pillow-heif (JPG/HEIC e créditos).
-- `MONTAR_V1_WINDOWS.bat`: instalador/checker/launcher.
-- `blocos/`: você deposita os **dois MP4** já exportados do Descript.
-- `saida/`: segmentos intermediários, progresso e MP4 gerados pelo script.
-
-**Requisitos:** Python 3.12+, FFmpeg com `libx264` e `aac`, `ffprobe`, Pillow e pillow-heif, espaço livre em disco para originais e intermediários. Os áudios e originais NÃO estão no GitHub.
-
-## Limitações que permanecem
-
-- A montagem completa **não foi renderizada nesta sessão** e não há duração final verificada. A meta de 40 minutos não é garantida: a duração resultará da quantidade real de material disponível, sem preencher tempo.
-- As janelas de entrevistas são **candidatas de decupagem**, sujeitas à escuta e à revisão do corte; os trechos de apoio sem tempo final são **propostas**, não quadros verificados.
-- A seleção automática de extras por data pode incluir planos fracos ou bastidores. **Revise a V1** antes de considerá-la final.
-- Os 20 arquivos muito grandes não estão exigidos por padrão; o arquivo `1000434736.mp4` permanece excluído.
-- A cópia para a pasta 08 do Drive depende da execução no Windows ou envio manual, já que a conexão atual não transferiu os MP4 publicados.
-- A publicação fora de uso privado depende dos direitos musicais.
-
-Para refazer uma cena após alterar `projeto_v1.json`, remova `saida\cenas\Cxx.mp4` e os respectivos `saida\segmentos\Cxx_*.mp4` antes de executar novamente, preservando as demais cenas.
+**Pendências editoriais:** C27 pode conter leitura de mensagem alheia e C29 exige verificação do áudio literal. Cortes marcados corte_proposto_revisar ainda precisam de avaliação. Música comercial em distribuição pública exige direitos. Nenhum arquivo original foi publicado no GitHub.
