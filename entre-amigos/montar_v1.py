@@ -130,7 +130,7 @@ def music_asset(idx, aliases):
 
 def get_image_png(source, cache):
     cache.mkdir(parents=True, exist_ok=True)
-    signature = hashlib.sha1((str(source) + str(source.stat().st_size)).encode()).hexdigest()[:14]
+    signature = hashlib.sha1(json.dumps(source_stamp(source)).encode()).hexdigest()[:14]
     output = cache / (signature + ".png")
     if output.is_file():
         return output
@@ -178,6 +178,8 @@ def render_clip(src, clip, out, image_cache):
     else:
         _, streams = probe(src)
         has_audio = any(s.get("codec_type") == "audio" for s in streams)
+        if clip.get("audio") == "original" and not has_audio:
+            raise RuntimeError(f"Áudio original exigido, mas ausente: {src.name}")
         inp = ["-ss", f"{start:.4f}", "-i", src]
         if has_audio:
             volume = "1.0" if clip.get("audio") == "original" else "0.0"
@@ -384,8 +386,10 @@ def print_preflight(project, scenes, idx, blocks, estimated=True):
         if scene.get("musica"):
             aliases = project["musicas_encontrar_por_nome"].get(scene["musica"], [])
             song = music_asset(idx, aliases)
-            if not song:
+            if not song and scene["id"] != "C26":
                 missing_music.append((scene["id"], scene["musica"]))
+            elif not song:
+                print("  AVISO C26: trilha opcional O Caderno indisponível; cena sem música")
     print(f"\nESTIMATIVA SUPERIOR baseada em cortes programados: {estimated_seconds/60:.1f} minutos.")
     print("Não é a duração medida da saída: arquivos curtos e quadros finais podem reduzir a duração.")
     print(f"Fontes obrigatórias ausentes: {len(missing)}; músicas ausentes: {len(missing_music)}")
@@ -469,9 +473,13 @@ def main():
             concat_copy(parts, neutral)
             if song_name and neutral != scene_file:
                 song = music_asset(idx, project["musicas_encontrar_por_nome"].get(song_name, []))
-                if song is None:
+                if song is None and sid == "C26":
+                    print("  C26: O Caderno é opcional, mantendo vídeo com áudio neutro")
+                    concat_copy([neutral], scene_file)
+                elif song is None:
                     raise FileNotFoundError(f"Música ausente: {song_name}")
-                add_music(neutral, song, scene_file)
+                else:
+                    add_music(neutral, song, scene_file)
             dur, streams = probe(scene_file)
             if dur < .45 or not any(x.get("codec_type") == "audio" for x in streams):
                 raise RuntimeError("Cena sem duração ou sem trilha de áudio")
