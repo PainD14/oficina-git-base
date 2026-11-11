@@ -33,7 +33,13 @@ with tempfile.TemporaryDirectory(prefix="entre-amigos-test-") as d:
     take, still, noaudio = root / "take.mp4", root / "foto.mp4", root / "silencioso.mp4"
     m.render_clip(src, {"entrada": .1, "saida": 1.1, "audio": "original"}, take, root / "imagens")
     m.render_clip(photo, {"limite": 1.25, "audio": "mute"}, still, root / "imagens")
-    m.render_clip(silent, {"entrada": 0, "saida": 1, "audio": "original"}, noaudio, root / "imagens")
+    m.render_clip(silent, {"entrada": 0, "saida": 1, "audio": "mute"}, noaudio, root / "imagens")
+    try:
+        m.render_clip(silent, {"entrada": 0, "saida": 1, "audio": "original"},
+                      root / "nao_pode_existir.mp4", root / "imagens")
+        raise AssertionError("Fala com áudio original ausente foi aceita indevidamente")
+    except RuntimeError as error:
+        assert "Áudio original exigido" in str(error)
     for item in (take, still, noaudio):
         dur, streams = m.probe(item)
         assert dur >= .9
