@@ -12,7 +12,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Verificar sintaxe Python sem renderizacao
-        run: python -m py_compile entre-amigos/montar_v1.py entre-amigos/gerar_proxies.py
+        run: python -m py_compile entre-amigos/montar_v1.py entre-amigos/gerar_proxies.py entre-amigos/validar_previa.py
       - name: Checar manifesto das 33 cenas
         run: |
           python - <<'PY'
@@ -46,3 +46,4 @@ jobs:
           python -m pip install -r entre-amigos/requirements.txt
           python entre-amigos/teste_tecnico.py
           python entre-amigos/teste_proxies.py
+          python entre-amigos/teste_previa.py
