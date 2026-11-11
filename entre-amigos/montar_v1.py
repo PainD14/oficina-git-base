@@ -20,6 +20,67 @@ VIDEO_EXT = {".mp4", ".mov", ".m4v", ".mpeg"}
 IMAGE_EXT = {".jpg", ".jpeg", ".png", ".heic", ".heif"}
 AUDIO_EXT = {".m4a", ".mp3", ".wav", ".flac", ".aac"}
 BANNED = {"1000434736.mp4"}
+PIPELINE_VERSION = "2026-11-11-v2-safe-cache"
+
+def fingerprint(*parts):
+    """Signature for an output, including the complete edit recipe and source stats."""
+    packed = json.dumps(parts, ensure_ascii=False, sort_keys=True, default=str)
+    return hashlib.sha256(packed.encode("utf-8")).hexdigest()
+
+def source_stamp(path):
+    path = Path(path).resolve()
+    stat = path.stat()
+    return [str(path), stat.st_size, stat.st_mtime_ns]
+
+def cache_marker(path):
+    return path.with_name(path.name + ".sha256")
+
+def cache_ready(path, signature, expected=None):
+    """Never reuse an output without matching recipe and valid A/V streams."""
+    marker = cache_marker(path)
+    if not path.exists() or path.stat().st_size < 16000 or not marker.exists():
+        return False
+    if marker.read_text(encoding="utf-8").strip() != signature:
+        return False
+    try:
+        duration, streams = probe(path)
+        return (duration > 0 and (expected is None or abs(duration - expected) < .7)
+                and any(s.get("codec_type") == "video" for s in streams)
+                and any(s.get("codec_type") == "audio" for s in streams))
+    except Exception:
+        return False
+
+def stamp_cache(path, signature):
+    cache_marker(path).write_text(signature, encoding="utf-8")
+
+def validate_manifest(project):
+    scenes = project.get("cenas", [])
+    ids = [f"C{i:02d}" for i in range(1, 34)]
+    if [s.get("id") for s in scenes] != ids:
+        raise ValueError("Manifesto deve conter C01 a C33 em ordem, sem repetições")
+    modes = {"bloco01", "bloco02", "dentro_bloco01", "dentro_bloco02",
+             "montar", "creditos"}
+    if [s["modo"] for s in scenes].count("bloco01") != 1:
+        raise ValueError("O Bloco 01 deve ser incluído uma única vez")
+    if [s["modo"] for s in scenes].count("bloco02") != 1:
+        raise ValueError("O Bloco 02 deve ser incluído uma única vez")
+    if scenes[0]["modo"] != "bloco01" or scenes[8]["modo"] != "bloco02":
+        raise ValueError("Blocos não correspondem às cenas C01 e C09")
+    if [s["modo"] for s in scenes[1:8]] != ["dentro_bloco01"] * 7:
+        raise ValueError("C02 a C08 já estão dentro do Bloco 01")
+    for scene in scenes:
+        if scene.get("modo") not in modes:
+            raise ValueError(f"Modo de edição inválido em {scene['id']}")
+        for c in scene.get("clipes", []):
+            if "arquivo" not in c or c["arquivo"].lower() in BANNED:
+                raise ValueError(f"Arquivo sem nome ou excluído em {scene['id']}")
+            if c.get("entrada") is not None and float(c["entrada"]) < 0:
+                raise ValueError(f"Entrada negativa em {scene['id']}")
+            if c.get("saida") is not None and float(c["saida"]) <= float(c.get("entrada") or 0):
+                raise ValueError(f"Corte invertido em {scene['id']}")
+            if c.get("audio", "mute") not in ("original", "mute"):
+                raise ValueError(f"Tipo de áudio inválido em {scene['id']}")
+    return True
 
 def canon(s):
     s = unicodedata.normalize("NFKD", str(s))
@@ -99,14 +160,16 @@ def duration_of(clip, source, cache):
 def render_clip(src, clip, out, image_cache):
     start, dur = duration_of(clip, src, image_cache)
     if dur < .45:
-        print(f"  PULADO, duração insuficiente: {src.name}")
-        return 0
-    if out.is_file() and out.stat().st_size > 16000:
+        raise ValueError(f"Trecho muito curto ou fora do arquivo: {src.name}, {start:.3f}s")
+    recipe = fingerprint(PIPELINE_VERSION, "clip", source_stamp(src),
+                         clip, round(start, 4), round(dur, 4), 1920, 1080, 24)
+    if cache_ready(out, recipe, dur):
+        print(f"  REUTILIZAR trecho: {out.name}", flush=True)
         return dur
     out.parent.mkdir(parents=True, exist_ok=True)
     temp = out.with_name(out.stem + "_PARCIAL.mp4")
-    vf = "fps=24,scale=1920:1080:force_original_aspect_ratio=decrease," \
-         "pad=1920:1080:(ow-iw)/2:(oh-ih)/2,setsar=1,format=yuv420p"
+    vf = ("fps=24,scale=1920:1080:force_original_aspect_ratio=decrease,"
+          "pad=1920:1080:(ow-iw)/2:(oh-ih)/2,setsar=1,format=yuv420p")
     if src.suffix.lower() in IMAGE_EXT:
         image = get_image_png(src, image_cache)
         inp = ["-loop", "1", "-framerate", "24", "-i", image,
@@ -114,9 +177,9 @@ def render_clip(src, clip, out, image_cache):
         sound = ["-map", "0:v:0", "-map", "1:a:0"]
     else:
         _, streams = probe(src)
-        audio = any(s.get("codec_type") == "audio" for s in streams)
-        inp = ["-ss", f"{start:.3f}", "-i", src]
-        if audio:
+        has_audio = any(s.get("codec_type") == "audio" for s in streams)
+        inp = ["-ss", f"{start:.4f}", "-i", src]
+        if has_audio:
             volume = "1.0" if clip.get("audio") == "original" else "0.0"
             sound = ["-map", "0:v:0", "-map", "0:a:0",
                      "-af", f"aresample=async=1:first_pts=0,volume={volume},apad"]
@@ -124,13 +187,18 @@ def render_clip(src, clip, out, image_cache):
             inp += ["-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=48000"]
             sound = ["-map", "0:v:0", "-map", "1:a:0"]
     run = ["ffmpeg", "-hide_banner", "-nostdin", "-v", "error", "-y"] + inp + sound + [
-        "-vf", vf, "-t", f"{dur:.3f}", "-r", "24",
+        "-vf", vf, "-t", f"{dur:.4f}", "-r", "24",
         "-c:v", "libx264", "-preset", "veryfast", "-crf", "21", "-g", "48",
         "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k",
         "-ar", "48000", "-ac", "2", "-movflags", "+faststart", temp]
     try:
         cmd(run, f"Codificar {src.name}: {start:.2f}s + {dur:.2f}s")
+        result_seconds, streams = probe(temp)
+        if (abs(result_seconds - dur) > .7 or
+                not any(v.get("codec_type") == "audio" for v in streams)):
+            raise RuntimeError(f"Trecho não validado: {src.name}")
         os.replace(temp, out)
+        stamp_cache(out, recipe)
     finally:
         if temp.exists():
             temp.unlink()
@@ -146,18 +214,31 @@ def concat_list(paths, filename):
 
 def concat_copy(paths, output):
     if not paths:
+        raise ValueError("Lista vazia de segmentos")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    expected = sum(probe(p)[0] for p in paths)
+    recipe = fingerprint(PIPELINE_VERSION, "concat",
+                         [source_stamp(p) for p in paths])
+    if cache_ready(output, recipe, expected):
+        print(f"  REUTILIZAR junção: {output.name}", flush=True)
         return
-    if len(paths) == 1:
-        shutil.copyfile(paths[0], output)
-        return
-    lst = output.with_suffix(".concat.txt")
-    concat_list(paths, lst)
     tmp = output.with_name(output.stem + "_PARCIAL.mp4")
     try:
-        cmd(["ffmpeg", "-hide_banner", "-nostdin", "-v", "error", "-y",
-             "-f", "concat", "-safe", "0", "-i", lst, "-c", "copy",
-             "-movflags", "+faststart", tmp], f"Juntar {len(paths)} tomadas")
+        if len(paths) == 1:
+            shutil.copyfile(paths[0], tmp)
+        else:
+            lst = output.with_suffix(".concat.txt")
+            concat_list(paths, lst)
+            cmd(["ffmpeg", "-hide_banner", "-nostdin", "-v", "error", "-y",
+                 "-f", "concat", "-safe", "0", "-i", lst, "-c", "copy",
+                 "-movflags", "+faststart", tmp], f"Juntar {len(paths)} tomadas")
+        got, streams = probe(tmp)
+        # Some compressed audio frames introduce rounding at segment boundaries.
+        if (abs(got - expected) > max(.8, len(paths)*.12)
+                or not any(v.get("codec_type") == "audio" for v in streams)):
+            raise RuntimeError(f"Concatenação inconsistente: {got:.2f}s em vez de {expected:.2f}s")
         os.replace(tmp, output)
+        stamp_cache(output, recipe)
     finally:
         if tmp.exists():
             tmp.unlink()
@@ -165,21 +246,32 @@ def concat_copy(paths, output):
 def add_music(video, song, output):
     length, _ = probe(video)
     if length <= 0:
-        return False
+        raise ValueError("Vídeo sem duração antes da mixagem")
+    recipe = fingerprint(PIPELINE_VERSION, "music", source_stamp(video),
+                         source_stamp(song), .30)
+    if cache_ready(output, recipe, length):
+        print("  REUTILIZAR mixagem musical", flush=True)
+        return True
     tmp = output.with_name(output.stem + "_PARCIAL.mp4")
     fade_out_at = max(0, length - 1.5)
+    # The scene's dialogue, if any, stays at its original level. No invented voices.
     filt = (f"[0:a]volume=1.0[a];"
-            f"[1:a]volume=0.38,afade=t=in:st=0:d=0.6,"
+            f"[1:a]volume=0.30,afade=t=in:st=0:d=0.6,"
             f"afade=t=out:st={fade_out_at:.3f}:d=1.5[m];"
-            f"[a][m]amix=inputs=2:duration=first:normalize=0:dropout_transition=0[ou]")
+            f"[a][m]amix=inputs=2:duration=first:normalize=0:"
+            f"dropout_transition=0[ou]")
     try:
         cmd(["ffmpeg", "-hide_banner", "-nostdin", "-v", "error", "-y",
              "-i", video, "-stream_loop", "-1", "-i", song,
              "-filter_complex", filt, "-map", "0:v:0", "-map", "[ou]",
-             "-t", f"{length:.3f}", "-c:v", "copy", "-c:a", "aac",
+             "-t", f"{length:.4f}", "-c:v", "copy", "-c:a", "aac",
              "-b:a", "160k", "-ar", "48000", "-ac", "2",
              "-movflags", "+faststart", tmp], f"Mixagem musical: {song.name}")
+        got, streams = probe(tmp)
+        if abs(got - length) > .7 or not any(s.get("codec_type") == "audio" for s in streams):
+            raise RuntimeError("Mixagem inválida")
         os.replace(tmp, output)
+        stamp_cache(output, recipe)
         return True
     finally:
         if tmp.exists():
