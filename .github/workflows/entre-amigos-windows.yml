@@ -29,7 +29,7 @@ jobs:
           $media = Join-Path $env:RUNNER_TEMP "entre-amigos-midias"
           New-Item -ItemType Directory -Path $media -Force | Out-Null
           $project = Get-Content "entre-amigos/projeto_v1.json" -Raw -Encoding UTF8 | ConvertFrom-Json
-          foreach ($scene in $project.cenas) {
+          foreach ($scene in @($project.cenas) + @($project.complementos_de_bloco)) {
             foreach ($clip in $scene.clipes) {
               $path = Join-Path $media $clip.arquivo
               if (-not (Test-Path $path)) { New-Item -ItemType File -Path $path -Force | Out-Null }
