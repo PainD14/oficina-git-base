@@ -14,9 +14,9 @@ Não foram enviados vídeos privados ao GitHub nem alterada a branch `main`.
 - **Abertura isolada**: https://drive.google.com/file/d/1ljz6cSW9yFi836xtZ8p_XWULkv3O6kZU/view
 - **Projeto editável no Descript**: https://web.descript.com/bb1c9a8d-d468-48e4-9e8b-18494dbf9871
 
-O renderizador usa **Bloco 01 + Bloco 02 uma única vez**, evitando duplicação da abertura e das primeiras 12 cenas.
+O renderizador usa **Bloco 01 + Bloco 02 uma única vez**, evitando duplicação da abertura e das primeiras 12 cenas. Como o Bloco 02 já traz C09–C12, uma **montagem complementar de C10 com Velha Infância** entra depois dele, utilizando outras mídias sem repetir cenas do bloco.
 
-**Conferência de fontes em 11/11/2026:** os 85 nomes distintos dos vídeos/fotos selecionados e as nove trilhas posteriores à abertura foram encontrados no Google Drive. A existência na nuvem não substitui a disponibilidade local no Windows.
+**Conferência de fontes em 11/11/2026:** os 88 nomes distintos dos vídeos/fotos selecionados e as nove trilhas posteriores à abertura foram encontrados no Google Drive. A existência na nuvem não substitui a disponibilidade local no Windows.
 
 ## Como executar no Windows
 
