@@ -46,3 +46,5 @@ jobs:
           $env:ENTRE_AMIGOS_TESTE_SO_VERIFICAR = "1"
           & "entre-amigos/MONTAR_V1_WINDOWS.bat" $media
           if ($LASTEXITCODE -ne 0) { throw "BAT nao conseguiu verificar a instalacao Windows" }
+          & "entre-amigos/MONTAR_PREVIA_22MIN_WINDOWS.bat" $media
+          if ($LASTEXITCODE -ne 0) { throw "BAT da PREVIA falhou na verificacao" }
