@@ -28,6 +28,10 @@ jobs:
       - name: Testar ajuda do comando
         run: python entre-amigos/montar_v1.py --help
 
+      - name: Instalar FFmpeg no ambiente remoto de teste
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
       - name: Verificar FFmpeg, fotos e mixagem com midias sinteticas
         run: |
           python -m pip install -r entre-amigos/requirements.txt
