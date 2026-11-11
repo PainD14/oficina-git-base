@@ -1,6 +1,6 @@
 {
   "schema": "entre-amigos/v1",
-  "nota": "As cenas C01-C08 estão DENTRO do Bloco 01 exportado; C09-C12 estão DENTRO do Bloco 02. Tempos de entrevistas são candidatos de decupagem, não legendas conferidas. Tempos de b-roll sem saida são decisões provisórias limitadas por 'limite'. Nenhuma cena é prolongada artificialmente para cumprir 40 min.",
+  "nota": "As cenas C01-C08 estão DENTRO do Bloco 01 exportado; C09-C12 estão DENTRO do Bloco 02. Tempos de entrevistas são candidatos de decupagem, não legendas conferidas. Tempos de b-roll sem saida são decisões provisórias limitadas por 'limite'. Nenhuma cena é prolongada artificialmente para cumprir 40 min. C10 é um complemento musical adicionado APÓS o Bloco 02, sem editá-lo: como esse bloco já contém C09-C12, a ordem interna foi preservada. O complemento usa mídias diferentes, sem repetir o vídeo de C10 já integrado ao bloco.",
   "alvo_minutos": 40,
   "format": {
     "width": 1920,
@@ -245,17 +245,41 @@
     },
     {
       "id": "C10",
-      "titulo": "Velha Infância, afetos",
+      "titulo": "Velha Infância, complemento de memória após Bloco 02",
       "ato": 2,
-      "alvo_segundos": 0,
+      "alvo_segundos": 70,
       "musica": "velha infância",
-      "modo": "dentro_bloco02",
+      "modo": "montar",
       "clipes": [
         {
-          "arquivo": "20240319_102548.mp4",
+          "arquivo": "20240319_103416.mp4",
           "entrada": 0,
           "saida": null,
           "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240319_102858.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240321_111011.jpg",
+          "entrada": 0,
+          "saida": null,
+          "limite": 5,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240311_112427.jpg",
+          "entrada": 0,
+          "saida": null,
+          "limite": 5,
           "audio": "mute",
           "status": "corte_proposto_revisar"
         }
