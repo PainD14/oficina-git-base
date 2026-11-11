@@ -29,8 +29,8 @@ echo.
 echo Caminho da pasta ORIGINAL do documentario no seu computador.
 echo Essa pasta deve conter subpastas com videos, fotos e musicas.
 echo Exemplo: G:\Meu Drive\ENTRE AMIGOS
-set "MIDIAS="
-set /p "MIDIAS=Cole o caminho completo: "
+set "MIDIAS=%~1"
+if not defined MIDIAS set /p "MIDIAS=Cole o caminho completo: "
 set "MIDIAS=%MIDIAS:"=%"
 if not defined MIDIAS goto :BAD_FOLDER
 if not exist "%MIDIAS%\" goto :BAD_FOLDER
@@ -47,6 +47,10 @@ echo.
 echo [2/4] Verificando manifesto, blocos, fontes e trilhas...
 py -3 "%~dp0montar_v1.py" --midias "%MIDIAS%" --blocos "%~dp0blocos" --verificar
 if errorlevel 1 goto :CHECK_FAILED
+if defined ENTRE_AMIGOS_TESTE_SO_VERIFICAR (
+  echo VERIFICACAO DE ARQUIVOS CONCLUIDA.
+  exit /b 0
+)
 
 echo.
 echo [3/4] Renderizando. Cenas e cortes prontos sao reutilizados
