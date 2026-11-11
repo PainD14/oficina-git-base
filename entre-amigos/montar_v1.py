@@ -155,7 +155,7 @@ def duration_of(clip, source, cache):
         available = float(clip["saida"]) - start
     else:
         available = float(clip.get("limite") or 12)
-    return start, max(0, min(available, length - start - 0.12))
+    return start, max(0, min(available, length - start))
 
 def render_clip(src, clip, out, image_cache):
     start, dur = duration_of(clip, src, image_cache)
@@ -302,42 +302,40 @@ def make_credits(cache):
     return [(out, 7), (black, 2)]
 
 def scenes_with_extras(scenes, idx, allow_large):
-    # Acrescenta tomadas de acervo REAL ainda não usadas. A seleção por data é
-    # PROVISÓRIA e pode conter bastidores. Áudio dessas extras fica em silêncio.
-    assigned = {canon(clip["arquivo"]) for scene in scenes for clip in scene.get("clipes", [])}
-    buckets = {2:["C08"],3:["C10"],4:["C13","C14"],5:["C13","C14"],
-               6:["C16","C17","C18"],7:["C18","C19"],
-               8:["C20","C21","C22","C23"],9:["C24","C25"],
-               10:["C24","C25"],11:["C25","C28"],12:["C30","C31"]}
-    by_id = {sc["id"]:sc for sc in scenes}
-    candidates = {}
-    for key, p in idx.items():
-        if key in assigned or p.suffix.lower() not in VIDEO_EXT or not re.match(r"^2024(0[2-9]|1[0-2])\d{2}_", key):
-            continue
-        if not allow_large and p.stat().st_size > 268435456:
-            continue
-        if "abertura coletiva" in canon(str(p)) or "a classificar" in canon(str(p)):
-            continue
-        month = int(key[4:6])
-        candidates.setdefault(month, []).append(p)
-    added = set()
-    for month, ids in buckets.items():
-        for p in sorted(candidates.get(month, []), key=lambda f:f.name):
-            available = [(by_id[s], s) for s in ids if s in by_id]
-            available.sort(key=lambda x: sum(float(c.get("limite", 12)) for c in x[0]["clipes"])
-                                      / max(1, x[0].get("alvo_segundos", 1)))
-            for scene, _ in available:
-                used = sum(float(c.get("limite", 12)) for c in scene["clipes"])
-                if used >= float(scene.get("alvo_segundos") or 0):
-                    continue
-                if p.name in added:
-                    continue
-                scene["clipes"].append({"arquivo":p.name,"entrada":1.5,"saida":None,
-                    "limite":11.5,"audio":"mute",
-                    "status":"extra_por_data_provisoria_revisar"})
-                added.add(p.name)
-                break
-    return len(added)
+    """Only explicit, content-reviewed extras. Never auto-select by date alone."""
+    file = BASE / "selecoes_adicionais_aprovadas.json"
+    if not file.is_file():
+        raise FileNotFoundError(
+            "Para --extras, crie selecoes_adicionais_aprovadas.json com cortes "
+            "revisados de ouvido e visualmente. Extras por data foram desativadas.")
+    data = json.loads(file.read_text(encoding="utf-8"))
+    if not isinstance(data, dict) or not isinstance(data.get("cenas"), dict):
+        raise ValueError("Seleções adicionais: esperado {'cenas': {'C22': [...]}}")
+    by_id = {s["id"]: s for s in scenes}
+    selected = []
+    used = {(canon(c["arquivo"]), c.get("entrada"), c.get("saida"))
+            for s in scenes for c in s.get("clipes", [])}
+    for sid, clips in data["cenas"].items():
+        if sid not in by_id or by_id[sid]["modo"] != "montar":
+            raise ValueError(f"Cena inválida para extras: {sid}")
+        for cut in clips:
+            if cut.get("revisado") is not True or cut.get("status") != "conteudo_conferido":
+                raise ValueError(f"Extra de {sid} precisa da confirmação de conteúdo")
+            if cut.get("saida") is None or float(cut["saida"]) <= float(cut.get("entrada") or 0):
+                raise ValueError(f"Extra de {sid} precisa de IN e OUT revisados")
+            path = asset(idx, cut["arquivo"])
+            if not path:
+                raise FileNotFoundError(f"Extra ausente: {cut['arquivo']}")
+            if not allow_large and path.stat().st_size > 268435456:
+                raise ValueError(f"Extra grande requer --incluir-grandes: {path.name}")
+            key = (canon(cut["arquivo"]), cut["entrada"], cut["saida"])
+            if key in used:
+                raise ValueError(f"Corte duplicado em extra: {sid} {cut['arquivo']}")
+            used.add(key)
+            by_id[sid]["clipes"].append({k: v for k, v in cut.items() if k != "revisado"})
+            selected.append(key)
+    return len(selected)
+
 
 def render_credit_scene(cache, chunks, images):
     output = []
@@ -348,141 +346,189 @@ def render_credit_scene(cache, chunks, images):
         output.append(part)
     return output
 
+def save_json_atomic(dest, data):
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    partial = dest.with_name(dest.name + ".tmp")
+    partial.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    os.replace(partial, dest)
+
+def print_preflight(project, scenes, idx, blocks, estimated=True):
+    missing, missing_music = [], []
+    estimated_seconds = 9.0
+    mandatory_names = project["arquivos_obrigatorios"]
+    mandatory = [asset(idx, name) for name in mandatory_names]
+    for name, file in zip(mandatory_names, mandatory):
+        print(f"  BLOCO OBRIGATÓRIO {name}: {'OK' if file else 'AUSENTE'}")
+        if file:
+            dur, streams = probe(file)
+            if not any(x.get("codec_type") == "video" for x in streams) or not any(x.get("codec_type") == "audio" for x in streams):
+                missing.append(("blocos", f"{name}: arquivo sem áudio ou vídeo"))
+            estimated_seconds += dur
+        else:
+            missing.append(("blocos", name))
+    for scene in scenes:
+        if scene["modo"] != "montar":
+            continue
+        for cut in scene["clipes"]:
+            file = asset(idx, cut["arquivo"])
+            if file is None:
+                missing.append((scene["id"], cut["arquivo"]))
+                continue
+            if estimated:
+                if file.suffix.lower() in IMAGE_EXT:
+                    estimated_seconds += float(cut.get("limite") or 4.0)
+                else:
+                    start = float(cut.get("entrada") or 0)
+                    nominal = float(cut["saida"])-start if cut.get("saida") is not None else float(cut.get("limite") or 12)
+                    estimated_seconds += max(0, nominal)
+        if scene.get("musica"):
+            aliases = project["musicas_encontrar_por_nome"].get(scene["musica"], [])
+            song = music_asset(idx, aliases)
+            if not song:
+                missing_music.append((scene["id"], scene["musica"]))
+    print(f"\nESTIMATIVA SUPERIOR baseada em cortes programados: {estimated_seconds/60:.1f} minutos.")
+    print("Não é a duração medida da saída: arquivos curtos e quadros finais podem reduzir a duração.")
+    print(f"Fontes obrigatórias ausentes: {len(missing)}; músicas ausentes: {len(missing_music)}")
+    for sid, name in missing:
+        print("  FALTA", sid, name)
+    for sid, song in missing_music:
+        print("  FALTA MÚSICA", sid, song)
+    return mandatory, missing, missing_music, estimated_seconds
+
 def main():
-    parser = argparse.ArgumentParser(description="ENTRE AMIGOS, montagem V1 em 33 cenas")
+    parser = argparse.ArgumentParser(description="ENTRE AMIGOS, montagem V1 das 33 cenas")
     parser.add_argument("--midias", required=True, help="Pasta local espelhada do Google Drive")
     parser.add_argument("--blocos", default=str(BASE / "blocos"),
                         help="Pasta com BLOCO_01.mp4 e BLOCO_02.mp4 exportados do Descript")
     parser.add_argument("--saida", default=str(BASE / "saida"))
-    parser.add_argument("--verificar", action="store_true", help="Somente conferir arquivos")
+    parser.add_argument("--verificar", action="store_true", help="Checar manifesto, caminhos e blocos sem renderizar")
     parser.add_argument("--extras", action="store_true",
-                        help="Usar imagens extras não repetidas, por data e sem áudio; revisar")
+                        help="Usar APENAS cortes confirmados em selecoes_adicionais_aprovadas.json")
     parser.add_argument("--incluir-grandes", action="store_true",
-                        help="Permitir arquivos acima de 256 MiB nas extras")
+                        help="Permitir arquivos acima de 256 MiB nas extras revisadas")
+    parser.add_argument("--permitir-incompleto", action="store_true",
+                        help="Exportar _PARCIAL.mp4 mesmo faltando cenas ou músicas, nunca como V1 final")
     args = parser.parse_args()
     if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
-        print("ERRO: FFmpeg e FFprobe precisam estar no PATH do Windows.")
+        print("ERRO: FFmpeg e FFprobe não estão no PATH do Windows.")
         return 2
     project = json.loads((BASE / "projeto_v1.json").read_text(encoding="utf-8"))
+    validate_manifest(project)
     scenes = project["cenas"]
-    if len(scenes) != 33:
-        print("ERRO: manifesto sem as 33 cenas")
-        return 2
-    blocks = Path(args.blocos)
+    blocks = Path(args.blocos).resolve()
     idx = index_files(args.midias, blocks)
-    mandatory = [asset(idx, x) for x in project["arquivos_obrigatorios"]]
-    if not all(mandatory):
-        print("FALTAM blocos obrigatórios do Descript:")
-        for name, p in zip(project["arquivos_obrigatorios"],mandatory):
-            print("  ", name, "OK" if p else "AUSENTE")
-        print("Baixe os dois MP4 publicados no Descript e salve na pasta 'blocos'.")
-        return 2
     if args.extras:
         count = scenes_with_extras(scenes, idx, args.incluir_grandes)
-        print(f"Tomadas extras reais e únicas por data: {count} (provisórias)")
-    missing = []
-    sources = 0
-    for s in scenes:
-        if s["modo"] != "montar":
-            continue
-        for cut in s["clipes"]:
-            if asset(idx, cut["arquivo"]):
-                sources += 1
-            else:
-                missing.append((s["id"], cut["arquivo"]))
-    print(f"Cenas do manifesto: {len(scenes)}; fontes de cenas restantes presentes: {sources}; ausentes: {len(missing)}")
-    for sid, name in missing:
-        print("  AUSENTE", sid, name)
+        print(f"Extras revisadas incluídas: {count}")
+    mandatory, missing, missing_music, estimate = print_preflight(project, scenes, idx, blocks)
     if args.verificar:
-        print("CONFERÊNCIA FINALIZADA. Nenhum vídeo renderizado.")
-        return 0
+        print("CONFERÊNCIA FINALIZADA. Nenhum vídeo foi renderizado.")
+        return 2 if (missing or missing_music) else 0
+    if missing or missing_music:
+        if not args.permitir_incompleto or any(x[0] == "blocos" for x in missing):
+            print("ERRO: arquivos obrigatórios indisponíveis. Nenhuma renderização iniciada.")
+            return 2
+        print("AVISO: saída PARCIAL explicitamente autorizada, há fontes ausentes.")
     output_root = Path(args.saida).resolve()
-    chunk_dir = output_root / "segmentos"
-    scenes_dir = output_root / "cenas"
-    image_dir = output_root / "imagens_convertidas"
-    for d in (chunk_dir,scenes_dir,image_dir):
-        d.mkdir(exist_ok=True,parents=True)
-    completed = []
+    chunk_dir, scenes_dir, image_dir = (output_root / "segmentos", output_root / "cenas",
+                                         output_root / "imagens_convertidas")
+    for d in (chunk_dir, scenes_dir, image_dir):
+        d.mkdir(exist_ok=True, parents=True)
+    errors, completed, rendered = [], [], set()
     journal = output_root / "PROGRESSO.json"
-    errors = []
-    # A abertura aprovada já está incluída no BLOCO_01. Não duplicar.
-    rendered = set()
-    for scene in scenes:
-        sid = scene["id"]
-        mode = scene["modo"]
-        if mode == "dentro_bloco01" or mode == "dentro_bloco02":
-            continue
-        scene_file = scenes_dir / (sid + ".mp4")
-        if scene_file.is_file() and scene_file.stat().st_size > 16000:
-            print("REUTILIZAR cena renderizada", sid)
-            rendered.add(sid)
-            completed.append(scene_file)
-            continue
+    plan = [scene for scene in scenes if scene["modo"] not in ("dentro_bloco01", "dentro_bloco02")]
+    for sequence, scene in enumerate(plan, start=1):
+        sid, mode = scene["id"], scene["modo"]
+        scene_file = scenes_dir / f"{sid}.mp4"
+        print(f"\n[{sequence}/{len(plan)}] {sid} - {scene['titulo']}", flush=True)
         try:
-            if mode in ("bloco01","bloco02"):
-                src = mandatory[0 if mode == "bloco01" else 1]
+            if mode in ("bloco01", "bloco02"):
+                original = mandatory[0 if mode == "bloco01" else 1]
+                if original is None:
+                    raise FileNotFoundError(f"Bloco {sid} ausente")
                 parts = [chunk_dir / f"{sid}_bloco.mp4"]
-                clip = {"entrada":0,"saida":None,"limite":probe(src)[0],"audio":"original"}
-                render_clip(src,clip,parts[0],image_dir)
+                cut = {"entrada": 0, "saida": None, "limite": probe(original)[0], "audio": "original"}
+                render_clip(original, cut, parts[0], image_dir)
             elif mode == "creditos":
-                parts = render_credit_scene(image_dir,chunk_dir,image_dir)
+                parts = render_credit_scene(image_dir, chunk_dir, image_dir)
             else:
                 parts = []
-                for j,cut in enumerate(scene["clipes"]):
-                    src = asset(idx, cut["arquivo"])
-                    if src is None:
+                for j, cut in enumerate(scene["clipes"]):
+                    source = asset(idx, cut["arquivo"])
+                    if source is None:
+                        errors.append(f"{sid}: arquivo ausente {cut['arquivo']}")
                         continue
-                    part = chunk_dir / f"{sid}_{j:03d}.mp4"
-                    if render_clip(src,cut,part,image_dir) > 0:
-                        parts.append(part)
+                    target = chunk_dir / f"{sid}_{j:03d}.mp4"
+                    render_clip(source, cut, target, image_dir)
+                    parts.append(target)
             if not parts:
-                errors.append(f"{sid}: sem material acessível")
-                continue
-            neutral = scene_file if not scene.get("musica") or mode in ("bloco01","bloco02") else scene_file.with_name(sid+"_sem_trilha.mp4")
-            concat_copy(parts,neutral)
-            song = music_asset(idx, project["musicas_encontrar_por_nome"].get(scene.get("musica"),[]))
-            if song and neutral != scene_file:
-                add_music(neutral,song,scene_file)
-            elif neutral != scene_file:
-                shutil.move(neutral,scene_file)
-                errors.append(f"{sid}: música '{scene.get('musica')}' ausente, cena sem trilha")
-            seconds, _ = probe(scene_file)
-            if seconds > 0:
-                completed.append(scene_file)
-                rendered.add(sid)
-                print(f"  CONCLUÍDO {sid} ({seconds:.1f}s)",flush=True)
-            else:
-                errors.append(f"{sid}: arquivo exportado sem duração")
+                raise RuntimeError("Nenhuma tomada válida disponível")
+            song_name = scene.get("musica")
+            neutral = scene_file if not song_name or mode in ("bloco01", "bloco02") \
+                else scenes_dir / f"{sid}_sem_trilha.mp4"
+            concat_copy(parts, neutral)
+            if song_name and neutral != scene_file:
+                song = music_asset(idx, project["musicas_encontrar_por_nome"].get(song_name, []))
+                if song is None:
+                    raise FileNotFoundError(f"Música ausente: {song_name}")
+                add_music(neutral, song, scene_file)
+            dur, streams = probe(scene_file)
+            if dur < .45 or not any(x.get("codec_type") == "audio" for x in streams):
+                raise RuntimeError("Cena sem duração ou sem trilha de áudio")
+            completed.append(scene_file)
+            rendered.add(sid)
+            print(f"  CENA CONCLUÍDA: {sid} ({dur:.2f}s)", flush=True)
         except Exception as e:
             errors.append(f"{sid}: {type(e).__name__}: {e}")
-            print("  FALHA",errors[-1],flush=True)
+            print("  FALHA", errors[-1], flush=True)
         finally:
-            journal.write_text(json.dumps({"progresso":[x.stem for x in completed],
-                "pendencias":errors,"fontes_faltando":missing},ensure_ascii=False,indent=2),encoding="utf-8")
+            save_json_atomic(journal, {
+                "versao_motor": PIPELINE_VERSION,
+                "cenas_concluidas": sorted(rendered),
+                "cenas_previstas": len(plan),
+                "pendencias": errors,
+                "fontes_ausentes": missing,
+                "musicas_ausentes": missing_music,
+                "status": "em_progresso",
+            })
+    if errors or len(completed) != len(plan):
+        print(f"\nMONTAGEM INCOMPLETA: {len(completed)}/{len(plan)} composições concluídas.")
+        if not args.permitir_incompleto:
+            save_json_atomic(journal, {"status": "incompleto", "cenas_concluidas": sorted(rendered),
+                                       "pendencias": errors})
+            print("O MP4 final NÃO será gerado. Corrija e execute o BAT novamente.")
+            return 3
     if not completed:
-        print("Nenhuma cena finalizada, verifique PROGRESSO.json.")
+        print("Nenhuma cena finalizada")
         return 3
-    final_file = output_root / "ENTRE_AMIGOS_V1_REVISAO.mp4"
-    print("JUNTANDO",len(completed),"segmentos de cenas; sem repetir planos")
+    is_partial = bool(errors or missing or missing_music)
+    name = "ENTRE_AMIGOS_V1_PARCIAL.mp4" if is_partial else "ENTRE_AMIGOS_V1_REVISAO.mp4"
+    final_file = output_root / name
+    print(f"\nJUNTAR {len(completed)} composições em {name}")
     concat_copy(completed, final_file)
-    duration,streams = probe(final_file)
-    vid = next((s for s in streams if s.get("codec_type") == "video"),{})
-    print("Arquivo criado:",final_file)
-    print("Duração real:",round(duration,2),"segundos, ou",round(duration/60,2),"minutos")
-    print("Formato:",vid.get("width"),"x",vid.get("height"),"FR",vid.get("r_frame_rate"))
-    print("Pendências:",len(errors),"; fontes ausentes:",len(missing))
-    result = {"arquivo":str(final_file),"duracao_segundos":duration,
-              "cenas_com_midia":sorted(rendered),"pendencias":errors,"fontes_ausentes":missing}
-    (output_root/"RESULTADO.json").write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")
-    if duration < 1 or vid.get("width") != 1920 or vid.get("height") != 1080:
-        print("ATENÇÃO: saída não passou pela conferência de resolução e duração")
+    duration, streams = probe(final_file)
+    video = next((s for s in streams if s.get("codec_type") == "video"), {})
+    audio = next((s for s in streams if s.get("codec_type") == "audio"), {})
+    result = {"arquivo": str(final_file), "duracao_segundos": duration,
+              "duracao_minutos": round(duration/60, 2),
+              "cenas_com_midia": sorted(rendered), "pendencias": errors,
+              "fontes_ausentes": missing, "musicas_ausentes": missing_music,
+              "completo_tecnicamente": not is_partial}
+    save_json_atomic(output_root / "RESULTADO.json", result)
+    valid = (duration > 1 and video.get("width") == 1920
+             and video.get("height") == 1080 and bool(audio))
+    save_json_atomic(journal, {**result, "status": "renderizado" if valid and not is_partial else "parcial"})
+    print(f"Arquivo: {final_file}\nDuração REAL: {duration/60:.2f} minutos")
+    print(f"Resolução: {video.get('width')}x{video.get('height')}; áudio: {bool(audio)}")
+    if not valid:
+        print("ERRO: a exportação não passou na verificação básica de A/V")
         return 4
-    print("OK: MP4 H264/AAC estruturado. Revisão editorial e escuta ainda necessárias.")
-    return 0
+    print("MP4 técnico exportado. Revisão humana de diálogos, músicas e cortes ainda necessária.")
+    return 0 if not is_partial else 5
 
 if __name__ == "__main__":
     try:
         sys.exit(main())
     except Exception as exc:
-        print("ERRO DE EXECUÇÃO:",repr(exc))
+        print("ERRO DE EXECUÇÃO:", repr(exc))
         sys.exit(1)
