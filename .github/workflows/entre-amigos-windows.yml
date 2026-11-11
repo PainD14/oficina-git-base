@@ -1,0 +1,48 @@
+name: Testar BAT Windows ENTRE AMIGOS
+on:
+  push:
+    branches: [entre-amigos-v1-recuperacao]
+  workflow_dispatch:
+jobs:
+  verificar-iniciador-windows:
+    runs-on: windows-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: FFmpeg de teste
+        shell: pwsh
+        run: |
+          if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
+            choco install ffmpeg --yes --no-progress
+            $env:PATH = "C:\ProgramData\chocolatey\bin;$env:PATH"
+          }
+          ffmpeg -version
+          ffprobe -version
+          py -3 --version
+      - name: Simular pasta Drive e testar BAT sem arquivos privados
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $media = Join-Path $env:RUNNER_TEMP "entre-amigos-midias"
+          New-Item -ItemType Directory -Path $media -Force | Out-Null
+          $project = Get-Content "entre-amigos/projeto_v1.json" -Raw -Encoding UTF8 | ConvertFrom-Json
+          foreach ($scene in $project.cenas) {
+            foreach ($clip in $scene.clipes) {
+              $path = Join-Path $media $clip.arquivo
+              if (-not (Test-Path $path)) { New-Item -ItemType File -Path $path -Force | Out-Null }
+            }
+          }
+          foreach ($title in $project.musicas_encontrar_por_nome.PSObject.Properties.Name) {
+            $path = Join-Path $media ($title + ".m4a")
+            New-Item -ItemType File -Path $path -Force | Out-Null
+          }
+          New-Item -ItemType Directory -Path "entre-amigos/blocos" -Force | Out-Null
+          & ffmpeg -hide_banner -loglevel error -y -f lavfi -i "testsrc2=size=320x180:rate=24" -f lavfi -i "sine=frequency=440:sample_rate=48000" -t 2 -c:v libx264 -pix_fmt yuv420p -c:a aac "entre-amigos/blocos/BLOCO_01.mp4"
+          if ($LASTEXITCODE -ne 0) { throw "FFmpeg falhou ao criar bloco sintetico" }
+          Copy-Item "entre-amigos/blocos/BLOCO_01.mp4" "entre-amigos/blocos/BLOCO_02.mp4"
+          $env:ENTRE_AMIGOS_TESTE_SO_VERIFICAR = "1"
+          & "entre-amigos/MONTAR_V1_WINDOWS.bat" $media
+          if ($LASTEXITCODE -ne 0) { throw "BAT nao conseguiu verificar a instalacao Windows" }
