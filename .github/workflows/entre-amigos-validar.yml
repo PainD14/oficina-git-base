@@ -27,3 +27,8 @@ jobs:
           PY
       - name: Testar ajuda do comando
         run: python entre-amigos/montar_v1.py --help
+
+      - name: Verificar FFmpeg, fotos e mixagem com midias sinteticas
+        run: |
+          python -m pip install -r entre-amigos/requirements.txt
+          python entre-amigos/teste_tecnico.py
