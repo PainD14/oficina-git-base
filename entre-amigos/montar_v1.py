@@ -20,7 +20,7 @@ VIDEO_EXT = {".mp4", ".mov", ".m4v", ".mpeg"}
 IMAGE_EXT = {".jpg", ".jpeg", ".png", ".heic", ".heif"}
 AUDIO_EXT = {".m4a", ".mp3", ".wav", ".flac", ".aac"}
 BANNED = {"1000434736.mp4"}
-PIPELINE_VERSION = "2026-11-11-v2-safe-cache"
+PIPELINE_VERSION = "2026-11-11-v3-complementos"
 
 def fingerprint(*parts):
     """Signature for an output, including the complete edit recipe and source stats."""
@@ -80,6 +80,39 @@ def validate_manifest(project):
                 raise ValueError(f"Corte invertido em {scene['id']}")
             if c.get("audio", "mute") not in ("original", "mute"):
                 raise ValueError(f"Tipo de áudio inválido em {scene['id']}")
+
+    # Complementos editoriais são exibidos APÓS os blocos fechados do Descript.
+    # Não adicionam C34, nem repetem C01-C08/C09-C12 que já estão dentro dos MP4.
+    extras = project.get("complementos_de_bloco", [])
+    if not isinstance(extras, list):
+        raise ValueError("complementos_de_bloco deve ser uma lista")
+    seen_ids = set(ids)
+    seen_cuts = {}
+    for item in [*scenes, *extras]:
+        for clip in item.get("clipes", []):
+            name = canon(clip["arquivo"])
+            start = float(clip.get("entrada") or 0)
+            stop = clip.get("saida")
+            if stop is not None:
+                stop = float(stop)
+                for old_start, old_stop, old_id in seen_cuts.get(name, []):
+                    if old_stop is not None and start < old_stop and old_start < stop:
+                        raise ValueError(f"Tomadas sobrepostas do mesmo arquivo: {name} ({item['id']} e {old_id})")
+            seen_cuts.setdefault(name, []).append((start, stop, item["id"]))
+    for item in extras:
+        cid = item.get("id")
+        if not cid or cid in seen_ids:
+            raise ValueError(f"ID duplicado ou inválido em complemento: {cid}")
+        seen_ids.add(cid)
+        if item.get("modo") != "montar" or item.get("apos") not in {"C01", "C09"}:
+            raise ValueError(f"Complemento {cid} deve ser montado após Bloco 01 ou Bloco 02")
+        if item.get("cena_de_destino") not in ids:
+            raise ValueError(f"Complemento {cid}: cena_de_destino inválida")
+        for c in item.get("clipes", []):
+            if c.get("saida") is None:
+                raise ValueError(f"Complemento {cid} exige IN/OUT definidos")
+            if not c.get("audio_original_presente", False):
+                raise ValueError(f"Complemento {cid} ainda não tem áudio confirmado")
     return True
 
 def canon(s):
@@ -424,7 +457,9 @@ def main():
     if args.extras:
         count = scenes_with_extras(scenes, idx, args.incluir_grandes)
         print(f"Extras revisadas incluídas: {count}")
-    mandatory, missing, missing_music, estimate = print_preflight(project, scenes, idx, blocks)
+    complements = project.get("complementos_de_bloco", [])
+    mandatory, missing, missing_music, estimate = print_preflight(
+        project, scenes + complements, idx, blocks)
     if args.verificar:
         print("CONFERÊNCIA FINALIZADA. Nenhum vídeo foi renderizado.")
         return 2 if (missing or missing_music) else 0
@@ -440,7 +475,14 @@ def main():
         d.mkdir(exist_ok=True, parents=True)
     errors, completed, rendered = [], [], set()
     journal = output_root / "PROGRESSO.json"
-    plan = [scene for scene in scenes if scene["modo"] not in ("dentro_bloco01", "dentro_bloco02")]
+    # Cada bloco fechado entra uma vez; complementos de seus capítulos vêm depois
+    # do bloco inteiro, em posição explícita, antes das próximas cenas.
+    plan = []
+    for scene in scenes:
+        if scene["modo"] in ("dentro_bloco01", "dentro_bloco02"):
+            continue
+        plan.append(scene)
+        plan.extend(comp for comp in complements if comp["apos"] == scene["id"])
     for sequence, scene in enumerate(plan, start=1):
         sid, mode = scene["id"], scene["modo"]
         scene_file = scenes_dir / f"{sid}.mp4"
