@@ -1,6 +1,6 @@
 {
   "schema": "entre-amigos/v1",
-  "nota": "As cenas C01-C08 estão DENTRO do Bloco 01 exportado; C09-C12 estão DENTRO do Bloco 02. Tempos de entrevistas são candidatos de decupagem, não legendas conferidas. Tempos de b-roll sem saida são decisões provisórias limitadas por 'limite'. Nenhuma cena é prolongada artificialmente para cumprir 40 min. C10 é um complemento musical adicionado APÓS o Bloco 02, sem editá-lo: como esse bloco já contém C09-C12, a ordem interna foi preservada. O complemento usa mídias diferentes, sem repetir o vídeo de C10 já integrado ao bloco.",
+  "nota": "As cenas C01-C08 estão DENTRO do Bloco 01 exportado; C09-C12 estão DENTRO do Bloco 02. Tempos de entrevistas são candidatos de decupagem, não legendas conferidas. Tempos de b-roll sem saida são decisões provisórias limitadas por 'limite'. Nenhuma cena é prolongada artificialmente para cumprir 40 min. C10 é um complemento musical adicionado APÓS o Bloco 02, sem editá-lo: como esse bloco já contém C09-C12, a ordem interna foi preservada. O complemento usa mídias diferentes, sem repetir o vídeo de C10 já integrado ao bloco. | AMPLIAÇÃO 11/11/2026: 8 novas janelas de 5 arquivos adicionais observados em 16 fotogramas cada, vídeo real e áudio presente com ASR preliminar. Nenhum texto ASR está homologado; não gerar legendas. 2 complementos posicionados após os blocos exportados, sem editá-los.",
   "alvo_minutos": 40,
   "format": {
     "width": 1920,
@@ -504,6 +504,21 @@
           "limite": 15,
           "audio": "original",
           "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240618_090004.mp4",
+          "entrada": 9,
+          "saida": 53,
+          "limite": 44,
+          "audio": "original",
+          "status": "candidato_com_proxy_visual_e_asr_pendente_escuta_literal",
+          "descricao_efetivamente_observada": "Colegas interagem em sala, um estudante sentado e outro em pé; dinâmica da turma e conversa captadas sem narração artificial.",
+          "duracao_proposta_segundos": 44,
+          "verificacao_visual": "16 fotogramas amostrados ao longo do vídeo; trilha de áudio real encontrada e processada por ASR local preliminar",
+          "audio_original_presente": true,
+          "transcricao_literal_conferida": false,
+          "sem_duplicacao_no_manifesto_anterior": true,
+          "legendas": false
         }
       ]
     },
@@ -1089,6 +1104,133 @@
       "musica": null,
       "modo": "creditos",
       "clipes": []
+    }
+  ],
+  "complementos_de_bloco": [
+    {
+      "id": "C08_COMPLEMENTO",
+      "titulo": "Convivência de fevereiro: tomadas recuperadas",
+      "cena_de_destino": "C08",
+      "apos": "C01",
+      "modo": "montar",
+      "musica": null,
+      "clipes": [
+        {
+          "arquivo": "20240222_081040.mp4",
+          "entrada": 11.2,
+          "saida": 27.5,
+          "limite": 16.3,
+          "audio": "original",
+          "status": "candidato_com_proxy_visual_e_asr_pendente_escuta_literal",
+          "descricao_efetivamente_observada": "Colega conversa diretamente para a câmera em sala de aula, plano próximo de seu rosto.",
+          "duracao_proposta_segundos": 16.3,
+          "verificacao_visual": "16 fotogramas amostrados ao longo do vídeo; trilha de áudio real encontrada e processada por ASR local preliminar",
+          "audio_original_presente": true,
+          "transcricao_literal_conferida": false,
+          "sem_duplicacao_no_manifesto_anterior": true,
+          "legendas": false
+        },
+        {
+          "arquivo": "20240222_081040.mp4",
+          "entrada": 29,
+          "saida": 36.5,
+          "limite": 7.5,
+          "audio": "original",
+          "status": "candidato_com_proxy_visual_e_asr_pendente_escuta_literal",
+          "descricao_efetivamente_observada": "Colega aparece em plano próximo e fala para a câmera no ambiente escolar.",
+          "duracao_proposta_segundos": 7.5,
+          "verificacao_visual": "16 fotogramas amostrados ao longo do vídeo; trilha de áudio real encontrada e processada por ASR local preliminar",
+          "audio_original_presente": true,
+          "transcricao_literal_conferida": false,
+          "sem_duplicacao_no_manifesto_anterior": true,
+          "legendas": false
+        },
+        {
+          "arquivo": "20240222_115619.mp4",
+          "entrada": 0.3,
+          "saida": 26,
+          "limite": 25.7,
+          "audio": "original",
+          "status": "candidato_com_proxy_visual_e_asr_pendente_escuta_literal",
+          "descricao_efetivamente_observada": "Colegas reunidos e conversando em sala, com reações e brincadeiras espontâneas.",
+          "duracao_proposta_segundos": 25.7,
+          "verificacao_visual": "16 fotogramas amostrados ao longo do vídeo; trilha de áudio real encontrada e processada por ASR local preliminar",
+          "audio_original_presente": true,
+          "transcricao_literal_conferida": false,
+          "sem_duplicacao_no_manifesto_anterior": true,
+          "legendas": false
+        },
+        {
+          "arquivo": "20240222_115619.mp4",
+          "entrada": 48.3,
+          "saida": 54,
+          "limite": 5.71,
+          "audio": "original",
+          "status": "candidato_com_proxy_visual_e_asr_pendente_escuta_literal",
+          "descricao_efetivamente_observada": "Plano de estudante falando em sala, após o trecho em que a câmera ficou virada; parte invertida excluída.",
+          "duracao_proposta_segundos": 5.7,
+          "verificacao_visual": "16 fotogramas amostrados ao longo do vídeo; trilha de áudio real encontrada e processada por ASR local preliminar",
+          "audio_original_presente": true,
+          "transcricao_literal_conferida": false,
+          "sem_duplicacao_no_manifesto_anterior": true,
+          "legendas": false
+        }
+      ]
+    },
+    {
+      "id": "C12_COMPLEMENTO",
+      "titulo": "Conversas e depoimento de março",
+      "cena_de_destino": "C12",
+      "apos": "C09",
+      "modo": "montar",
+      "musica": null,
+      "clipes": [
+        {
+          "arquivo": "20240321_111033.mp4",
+          "entrada": 15.8,
+          "saida": 80.5,
+          "limite": 64.7,
+          "audio": "original",
+          "status": "candidato_com_proxy_visual_e_asr_pendente_escuta_literal",
+          "descricao_efetivamente_observada": "Depoimento contínuo de estudante sentada com celular usado como microfone; ASR preliminar sugere planos de futuro e mensagem de incentivo, sem validar palavras literais.",
+          "duracao_proposta_segundos": 64.7,
+          "verificacao_visual": "16 fotogramas amostrados ao longo do vídeo; trilha de áudio real encontrada e processada por ASR local preliminar",
+          "audio_original_presente": true,
+          "transcricao_literal_conferida": false,
+          "sem_duplicacao_no_manifesto_anterior": true,
+          "legendas": false
+        },
+        {
+          "arquivo": "20240322_085226.mp4",
+          "entrada": 1.5,
+          "saida": 14,
+          "limite": 12.5,
+          "audio": "original",
+          "status": "candidato_com_proxy_visual_e_asr_pendente_escuta_literal",
+          "descricao_efetivamente_observada": "Colegas conversam e se apresentam em ambiente escolar; mudanças naturais de quem fala.",
+          "duracao_proposta_segundos": 12.5,
+          "verificacao_visual": "16 fotogramas amostrados ao longo do vídeo; trilha de áudio real encontrada e processada por ASR local preliminar",
+          "audio_original_presente": true,
+          "transcricao_literal_conferida": false,
+          "sem_duplicacao_no_manifesto_anterior": true,
+          "legendas": false
+        },
+        {
+          "arquivo": "20240322_085226.mp4",
+          "entrada": 19,
+          "saida": 40,
+          "limite": 21,
+          "audio": "original",
+          "status": "candidato_com_proxy_visual_e_asr_pendente_escuta_literal",
+          "descricao_efetivamente_observada": "Interação de grupo com perguntas, respostas e reações diante da câmera.",
+          "duracao_proposta_segundos": 21,
+          "verificacao_visual": "16 fotogramas amostrados ao longo do vídeo; trilha de áudio real encontrada e processada por ASR local preliminar",
+          "audio_original_presente": true,
+          "transcricao_literal_conferida": false,
+          "sem_duplicacao_no_manifesto_anterior": true,
+          "legendas": false
+        }
+      ]
     }
   ]
 }
