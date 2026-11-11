@@ -2,6 +2,22 @@
 
 **Estado em 11/11/2026:** renderizador e testes sintéticos no GitHub; o filme completo ainda **não** foi renderizado com as mídias originais. A branch main permanece intacta.
 
+## Prévia de revisão de aproximadamente 22 minutos (montagem atual)
+
+**Prioridade 11/11/2026:** gerar e assistir à montagem já programada, sem acrescentar clipes novos nem tentar alcançar 40 minutos. O MP4 ainda **não foi exportado nesta sessão** porque os dois blocos publicados pelo Descript não puderam ser materializados no ambiente de renderização e há referências a originais sem localização confirmada no Drive.
+
+**Iniciador correto: [MONTAR_PREVIA_22MIN_WINDOWS.bat](MONTAR_PREVIA_22MIN_WINDOWS.bat)**
+
+1. Extrair o ZIP desta branch e instalar Python 3.12+ e FFmpeg.
+2. Baixar **Bloco 01** (2min43s) do [Descript](https://share.descript.com/view/7aTMx3UqC9x) e salvar como `entre-amigos/blocos/BLOCO_01.mp4`.
+3. Baixar **Bloco 02** (1min11s) do [Descript](https://share.descript.com/view/WNgRx7FydqK) e salvar como `entre-amigos/blocos/BLOCO_02.mp4`.
+4. Garantir que os vídeos/fotos/músicas originais do Google Drive estejam disponíveis offline no Windows, sem renomear arquivos.
+5. Abrir **MONTAR_PREVIA_22MIN_WINDOWS.bat** e informar a pasta original quando solicitado. O BAT verifica antes se cada arquivo do manifesto está disponível e se os blocos têm áudio/vídeo.
+6. Caso todos os arquivos estejam disponíveis, o FFmpeg renderiza os trechos por cena, retoma cortes validamente concluídos e executa uma **decodificação de conferência completa** antes de criar `saida/ENTRE_AMIGOS_V1_PREVIA_22MIN.mp4`.
+7. Se faltar algum original, a montagem não começa e o programa exibe os nomes exatos. **Não substitua os originais por fotos congeladas nem altere o manifesto para ignorar as faltas.** Se não chegar a 22 minutos, o programa informa a duração real, sem esticar cenas.
+
+Na verificação desta sessão, **dois originais inicialmente ausentes do ambiente foram localizados no Drive** (`20240319_102858.mp4` em `07 - A classificar` e `20240321_111011.jpg` em `05 - Fotografias`). Onze referências não foram localizadas nas pastas consultadas: `20240319_103416.mp4`, `20240508_100654.mp4`, `20240508_100858.mp4`, `20240626_085312.mp4`, `20240702_075048.mp4`, `20240702_082633.mp4`, `20240702_093406.mp4`, `20240702_112156.mp4`, `20240930_104038.mp4`, `20240930_104230.mp4` e `20241101_085645.mp4`. Esses arquivos **podem estar em outras cópias locais**; o preflight do Windows fará a verificação definitiva. Não escolher substitutos sem assistir.
+
 ## Material anterior preservado
 
 - [Bloco 01, 2min43,7s, com abertura aprovada incluída](https://share.descript.com/view/7aTMx3UqC9x)
