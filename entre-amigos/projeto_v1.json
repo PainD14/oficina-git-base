@@ -1,0 +1,1070 @@
+{
+  "schema": "entre-amigos/v1",
+  "nota": "As cenas C01-C08 estão DENTRO do Bloco 01 exportado; C09-C12 estão DENTRO do Bloco 02. Tempos de entrevistas são candidatos de decupagem, não legendas conferidas. Tempos de b-roll sem saida são decisões provisórias limitadas por 'limite'. Nenhuma cena é prolongada artificialmente para cumprir 40 min.",
+  "alvo_minutos": 40,
+  "format": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 24,
+    "codec": "libx264",
+    "audio": "aac"
+  },
+  "arquivos_obrigatorios": [
+    "BLOCO_01.mp4",
+    "BLOCO_02.mp4"
+  ],
+  "abertura_aprovada": "ENTRE_AMIGOS_ABERTURA_APROVADA.mp4",
+  "abertura_drive": "https://drive.google.com/file/d/1ljz6cSW9yFi836xtZ8p_XWULkv3O6kZU/view",
+  "bloco01_descript": "https://share.descript.com/view/7aTMx3UqC9x",
+  "bloco02_descript": "https://share.descript.com/view/WNgRx7FydqK",
+  "musicas_encontrar_por_nome": {
+    "tempos modernos": [
+      "tempos modernos"
+    ],
+    "velha infância": [
+      "velha infância",
+      "velha infancia"
+    ],
+    "anna júlia": [
+      "anna julia",
+      "anna júlia"
+    ],
+    "young folks": [
+      "young folks"
+    ],
+    "dias melhores": [
+      "dias melhores"
+    ],
+    "walking on a dream": [
+      "walking on a dream"
+    ],
+    "o caderno": [
+      "o caderno"
+    ],
+    "tempo perdido": [
+      "tempo perdido"
+    ],
+    "por enquanto": [
+      "por enquanto"
+    ]
+  },
+  "exclusoes": [
+    "1000434736.mp4"
+  ],
+  "cenas": [
+    {
+      "id": "C01",
+      "titulo": "Apresentação e prólogo",
+      "ato": 1,
+      "alvo_segundos": 0,
+      "musica": null,
+      "modo": "bloco01",
+      "clipes": []
+    },
+    {
+      "id": "C02",
+      "titulo": "Canto coletivo",
+      "ato": 1,
+      "alvo_segundos": 0,
+      "musica": null,
+      "modo": "dentro_bloco01",
+      "clipes": []
+    },
+    {
+      "id": "C03",
+      "titulo": "Título ENTRE AMIGOS",
+      "ato": 1,
+      "alvo_segundos": 0,
+      "musica": null,
+      "modo": "dentro_bloco01",
+      "clipes": []
+    },
+    {
+      "id": "C04",
+      "titulo": "Primeiro e último ano",
+      "ato": 1,
+      "alvo_segundos": 0,
+      "musica": null,
+      "modo": "dentro_bloco01",
+      "clipes": [
+        {
+          "arquivo": "20240219_085823.mp4",
+          "entrada": 2.278,
+          "saida": 6.238,
+          "limite": 5,
+          "audio": "original",
+          "status": "janela_decupada_revisar_escuta"
+        }
+      ]
+    },
+    {
+      "id": "C05",
+      "titulo": "A escola ganha vida",
+      "ato": 1,
+      "alvo_segundos": 0,
+      "musica": null,
+      "modo": "dentro_bloco01",
+      "clipes": [
+        {
+          "arquivo": "20240228_075210.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240301_102826.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240301_102839.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C06",
+      "titulo": "Tempos Modernos",
+      "ato": 1,
+      "alvo_segundos": 0,
+      "musica": "tempos modernos",
+      "modo": "dentro_bloco01",
+      "clipes": [
+        {
+          "arquivo": "20240307_081416.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240307_083450.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C07",
+      "titulo": "Personalidades e conversas",
+      "ato": 1,
+      "alvo_segundos": 0,
+      "musica": null,
+      "modo": "dentro_bloco01",
+      "clipes": [
+        {
+          "arquivo": "20240307_091432.mp4",
+          "entrada": 3.933,
+          "saida": 16.913,
+          "limite": 14,
+          "audio": "original",
+          "status": "janela_decupada_revisar_escuta"
+        },
+        {
+          "arquivo": "20240321_114832.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C08",
+      "titulo": "Fotos e memórias de fevereiro e março",
+      "ato": 1,
+      "alvo_segundos": 0,
+      "musica": null,
+      "modo": "dentro_bloco01",
+      "clipes": [
+        {
+          "arquivo": "20240228_074806.jpg",
+          "entrada": 0,
+          "saida": null,
+          "limite": 4,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240228_075153.jpg",
+          "entrada": 0,
+          "saida": null,
+          "limite": 4,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240311_111940.jpg",
+          "entrada": 0,
+          "saida": null,
+          "limite": 4,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C09",
+      "titulo": "Preparação da homenagem à professora Marina",
+      "ato": 2,
+      "alvo_segundos": 0,
+      "musica": null,
+      "modo": "bloco02",
+      "clipes": [
+        {
+          "arquivo": "20240319_084244.mp4",
+          "entrada": 0.733,
+          "saida": 18.973,
+          "limite": 19,
+          "audio": "original",
+          "status": "janela_decupada_revisar_escuta"
+        },
+        {
+          "arquivo": "20240319_084640.mp4",
+          "entrada": 0.658,
+          "saida": 25.118,
+          "limite": 25,
+          "audio": "original",
+          "status": "janela_decupada_revisar_escuta"
+        }
+      ]
+    },
+    {
+      "id": "C10",
+      "titulo": "Velha Infância, afetos",
+      "ato": 2,
+      "alvo_segundos": 0,
+      "musica": "velha infância",
+      "modo": "dentro_bloco02",
+      "clipes": [
+        {
+          "arquivo": "20240319_102548.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C11",
+      "titulo": "O papel dos professores",
+      "ato": 2,
+      "alvo_segundos": 0,
+      "musica": null,
+      "modo": "dentro_bloco02",
+      "clipes": [
+        {
+          "arquivo": "20240319_084415.mp4",
+          "entrada": 0.338,
+          "saida": 15.458,
+          "limite": 16,
+          "audio": "original",
+          "status": "janela_decupada_revisar_escuta"
+        }
+      ]
+    },
+    {
+      "id": "C12",
+      "titulo": "Humor em sala, a caneta",
+      "ato": 2,
+      "alvo_segundos": 0,
+      "musica": null,
+      "modo": "dentro_bloco02",
+      "clipes": [
+        {
+          "arquivo": "20240321_100638.mp4",
+          "entrada": 9.822,
+          "saida": 14.562,
+          "limite": 5,
+          "audio": "original",
+          "status": "janela_decupada_revisar_escuta"
+        }
+      ]
+    },
+    {
+      "id": "C13",
+      "titulo": "Anna Júlia, abril e maio",
+      "ato": 2,
+      "alvo_segundos": 85,
+      "musica": "anna júlia",
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20240405_111013.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240405_112527.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240405_112124.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240508_100654.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C14",
+      "titulo": "A rotina que virou história",
+      "ato": 2,
+      "alvo_segundos": 110,
+      "musica": null,
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20240405_110055.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 14,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240508_100713.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 15,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240508_100858.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C15",
+      "titulo": "Aprendizado além da sala",
+      "ato": 2,
+      "alvo_segundos": 65,
+      "musica": null,
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20240626_085222.mp4",
+          "entrada": 0.47,
+          "saida": 24.03,
+          "limite": 24,
+          "audio": "original",
+          "status": "janela_decupada_revisar_escuta"
+        },
+        {
+          "arquivo": "20240626_085312.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240605_102332.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C16",
+      "titulo": "Young Folks",
+      "ato": 2,
+      "alvo_segundos": 95,
+      "musica": "young folks",
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20240605_101342.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240607_104051.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240607_104448.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240614_095925.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C17",
+      "titulo": "O barulho da sala",
+      "ato": 2,
+      "alvo_segundos": 75,
+      "musica": null,
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20240626_114439.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 10,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240629_095239.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 15,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240629_104700.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 15,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C18",
+      "titulo": "O que a gente viveu junto",
+      "ato": 3,
+      "alvo_segundos": 100,
+      "musica": null,
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20240629_104602.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240702_093232.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240702_112028_1.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240702_093406.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C19",
+      "titulo": "Dias Melhores",
+      "ato": 3,
+      "alvo_segundos": 105,
+      "musica": "dias melhores",
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20240702_075048.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240702_082633.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240702_112156.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C20",
+      "titulo": "Ponte para agosto",
+      "ato": 3,
+      "alvo_segundos": 50,
+      "musica": null,
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20240814_074358.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 15,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240814_084406.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 15,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C21",
+      "titulo": "Chegada e descoberta",
+      "ato": 3,
+      "alvo_segundos": 55,
+      "musica": null,
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20240814_090412.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240814_101811.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240814_124107.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 14,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240814_125126.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C22",
+      "titulo": "Walking on a Dream, passeio",
+      "ato": 3,
+      "alvo_segundos": 140,
+      "musica": "walking on a dream",
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20240814_150540.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240814_150904.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240814_163647.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240814_173503.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240814_150723.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C23",
+      "titulo": "O som daquele dia",
+      "ato": 3,
+      "alvo_segundos": 130,
+      "musica": null,
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20240814_163943.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 18,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240814_164008.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 18,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240814_173442.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 18,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240814_174647.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 18,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C24",
+      "titulo": "Os últimos dias comuns",
+      "ato": 3,
+      "alvo_segundos": 120,
+      "musica": null,
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20241025_103629.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 16,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241025_104118.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 14,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241025_111821.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 14,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241025_091257.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C25",
+      "titulo": "O tempo passou",
+      "ato": 3,
+      "alvo_segundos": 80,
+      "musica": null,
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20241025_105427.heic",
+          "entrada": 0,
+          "saida": null,
+          "limite": 4,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241025_105430.heic",
+          "entrada": 0,
+          "saida": null,
+          "limite": 4,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241025_105433.heic",
+          "entrada": 0,
+          "saida": null,
+          "limite": 4,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241101_085618_1.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C26",
+      "titulo": "O Caderno, lembranças",
+      "ato": 4,
+      "alvo_segundos": 80,
+      "musica": "o caderno",
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20241101_085816.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241101_095909.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240311_111214.jpg",
+          "entrada": 0,
+          "saida": null,
+          "limite": 4,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240311_111215.jpg",
+          "entrada": 0,
+          "saida": null,
+          "limite": 4,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C27",
+      "titulo": "Vozes que ficaram",
+      "ato": 4,
+      "alvo_segundos": 65,
+      "musica": null,
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20241206_093634.mp4",
+          "entrada": 7.702,
+          "saida": 16.022,
+          "limite": 9,
+          "audio": "original",
+          "status": "janela_decupada_revisar_escuta"
+        }
+      ]
+    },
+    {
+      "id": "C28",
+      "titulo": "Tempo Perdido",
+      "ato": 4,
+      "alvo_segundos": 125,
+      "musica": "tempo perdido",
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20240930_104230.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20240930_104038.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241025_103432.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241025_103930.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241101_085645.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C29",
+      "titulo": "O depoimento emocional",
+      "ato": 4,
+      "alvo_segundos": 60,
+      "musica": null,
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20240319_084328.mp4",
+          "entrada": 4.961,
+          "saida": 11.881,
+          "limite": 7,
+          "audio": "original",
+          "status": "janela_decupada_revisar_escuta"
+        },
+        {
+          "arquivo": "20240319_084328.mp4",
+          "entrada": 13.581,
+          "saida": 18.541,
+          "limite": 5,
+          "audio": "original",
+          "status": "janela_decupada_revisar_escuta"
+        }
+      ]
+    },
+    {
+      "id": "C30",
+      "titulo": "A escola depois",
+      "ato": 4,
+      "alvo_segundos": 85,
+      "musica": null,
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20241206_093941.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 18,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241206_094700.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 18,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241206_093548.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 18,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241206_093700.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 18,
+          "audio": "original",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C31",
+      "titulo": "Por Enquanto",
+      "ato": 4,
+      "alvo_segundos": 160,
+      "musica": "por enquanto",
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20241206_093017.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241206_081924.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241206_082127.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241206_094125.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241206_094328.mp4",
+          "entrada": 0,
+          "saida": null,
+          "limite": 12,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C32",
+      "titulo": "A última fotografia",
+      "ato": 4,
+      "alvo_segundos": 22,
+      "musica": null,
+      "modo": "montar",
+      "clipes": [
+        {
+          "arquivo": "20240319_111047.jpg",
+          "entrada": 0,
+          "saida": null,
+          "limite": 5,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        },
+        {
+          "arquivo": "20241101_095853.heic",
+          "entrada": 0,
+          "saida": null,
+          "limite": 7,
+          "audio": "mute",
+          "status": "corte_proposto_revisar"
+        }
+      ]
+    },
+    {
+      "id": "C33",
+      "titulo": "Créditos e preto final",
+      "ato": 4,
+      "alvo_segundos": 9,
+      "musica": null,
+      "modo": "creditos",
+      "clipes": []
+    }
+  ]
+}
